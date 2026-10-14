@@ -61,9 +61,11 @@ commande. Certains modèles quittent le réseau en veille : ils apparaissent
   préréglages** montre ce qu'une radio a enregistré.
 - **Changer de source** : la radio et la source, par le nom que la radio
   affiche ou `DAB`, `FM`, `radio internet`, `Spotify`, `Bluetooth`, `AUX`.
-- **Lecture en cours** donne `{{power}}`, `{{playing}}`, `{{name}}`,
-  `{{text}}`, `{{artist}}`, `{{summary}}`, `{{volume}}`… pour un message ou
-  une condition.
+- **Lecture en cours** donne `power`, `playing`, `name`, `text`, `artist`,
+  `summary`, `volume`… pour un message ou une condition. Les actions
+  suivantes de la scène les trouvent dans leur liste de variables (écrites
+  `{{<étape>.<action>.<clé>}}`, par exemple `{{0.0.summary}}` quand cette
+  action est la première de la scène).
 
 L'action générique **Contrôler un appareil** pilote aussi l'alimentation, le
 volume, la source et les boutons de lecture. **Sourdine** est affichée par

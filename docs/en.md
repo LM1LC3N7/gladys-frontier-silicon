@@ -55,8 +55,11 @@ minute, quietly.
   a radio has stored.
 - **Change the source**: the radio and the source, by the name the radio
   shows or `DAB`, `FM`, `internet radio`, `Spotify`, `Bluetooth`, `AUX`.
-- **Now playing** gives `{{power}}`, `{{playing}}`, `{{name}}`, `{{text}}`,
-  `{{artist}}`, `{{summary}}`, `{{volume}}`… for a message or a condition.
+- **Now playing** gives `power`, `playing`, `name`, `text`, `artist`,
+  `summary`, `volume`… for a message or a condition. The following actions
+  of the scene find them in their variable list (written
+  `{{<step>.<action>.<key>}}`, for instance `{{0.0.summary}}` when this
+  action is the first of the scene).
 
 The generic **Control a device** scene action also drives the power, the
 volume, the source and the transport buttons. **Mute** is shown by Gladys as
