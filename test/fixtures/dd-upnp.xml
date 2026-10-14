@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Shaped after a UPnP device description: built blind, see TODO.md -->
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+  <specVersion><major>1</major><minor>0</minor></specVersion>
+  <device>
+    <deviceType>urn:schemas-frontier-silicon-com:device:fsapi:1</deviceType>
+    <friendlyName>Keukenradio</friendlyName>
+    <manufacturer>Frontier Silicon</manufacturer>
+    <UDN>uuid:3dcc7100-f76c-11dd-87af-00226124ca30</UDN>
+  </device>
+  <webfsapi>http://192.168.1.183:80/fsapi</webfsapi>
+</root>

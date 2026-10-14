@@ -1,0 +1,411 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "Frontier Silicon radios",
+  "description": {
+    "en": "Unofficial connector: Roberts, Hama, Medion, Revo… internet radios, on the local network.",
+    "fr": "Connecteur non officiel : radios internet Roberts, Hama, Medion, Revo…, en réseau local."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/lm1lc3n7/gladys-frontier-silicon:0.1.0",
+  "gladys_version": ">=5.1.0",
+  "cover_image": "https://raw.githubusercontent.com/LM1LC3N7/gladys-frontier-silicon/main/cover.png",
+  "categories": ["multimedia"],
+  "transports": ["local"],
+  "network_discovery": [
+    { "type": "ssdp", "st": "urn:schemas-frontier-silicon-com:undok:fsapi:1" },
+    { "type": "ssdp", "st": "urn:schemas-frontier-silicon-com:fs_reference:fsapi:1" }
+  ],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Frontier Silicon radios in Gladys",
+        "fr": "Les radios Frontier Silicon dans Gladys"
+      },
+      "description": {
+        "en": "Unofficial connector, not affiliated with Frontier Smart Technologies nor with the radio brands. It drives the internet radios built on a Frontier Silicon module (Roberts, Hama, Medion, Revo, Lenco, Auna… the ones the UNDOK app controls) on the local network, without any cloud: power, volume, mute, source (DAB, FM, internet radio, Spotify, Bluetooth, AUX), presets and now playing, with a scene trigger, three scene actions and a dashboard widget. Open Discovery: the radios answering on the network are found automatically; type the address of the others below.",
+        "fr": "Connecteur non officiel, sans lien avec Frontier Smart Technologies ni avec les marques des radios. Il pilote les radios internet équipées d'un module Frontier Silicon (Roberts, Hama, Medion, Revo, Lenco, Auna… celles que l'application UNDOK contrôle) en réseau local, sans cloud : alimentation, volume, sourdine, source (DAB, FM, radio internet, Spotify, Bluetooth, AUX), préréglages et lecture en cours, avec un déclencheur de scène, trois actions de scène et un widget. Ouvrez Découverte : les radios qui répondent sur le réseau sont trouvées automatiquement ; saisissez ci-dessous l'adresse des autres."
+      },
+      "links": [
+        {
+          "url": "https://github.com/LM1LC3N7/gladys-frontier-silicon/blob/main/docs/fr.md",
+          "label": { "en": "Guide (French)", "fr": "Guide (français)" }
+        },
+        {
+          "url": "https://github.com/LM1LC3N7/gladys-frontier-silicon/blob/main/docs/en.md",
+          "label": { "en": "Guide (English)", "fr": "Guide (anglais)" }
+        }
+      ]
+    },
+    {
+      "key": "pin",
+      "type": "secret",
+      "label": { "en": "Radio PIN", "fr": "Code PIN des radios" },
+      "description": {
+        "en": "The NetRemote PIN of the radios (menu Settings > Network > NetRemote PIN setup). Leave empty for 1234, the factory PIN.",
+        "fr": "Le code PIN NetRemote des radios (menu Réglages > Réseau > Configuration PIN NetRemote). Laissez vide pour 1234, le code d'usine."
+      },
+      "required": false,
+      "placeholder": { "en": "1234", "fr": "1234" }
+    },
+    {
+      "key": "hosts",
+      "type": "string",
+      "label": {
+        "en": "Radio addresses (if not found automatically)",
+        "fr": "Adresses des radios (si elles ne sont pas trouvées)"
+      },
+      "description": {
+        "en": "IP addresses or host names, separated by commas, with an optional :port. Only needed for radios Discovery does not find (another network, multicast blocked). Give them a fixed address in your router.",
+        "fr": "Adresses IP ou noms d'hôte, séparés par des virgules, avec un :port facultatif. Utile seulement pour les radios que Découverte ne trouve pas (autre réseau, multicast bloqué). Donnez-leur une adresse fixe dans votre box."
+      },
+      "required": false,
+      "default": "",
+      "placeholder": { "en": "192.168.1.20, 192.168.1.21", "fr": "192.168.1.20, 192.168.1.21" }
+    },
+    {
+      "key": "poll_interval",
+      "type": "number",
+      "label": { "en": "Refresh interval (s)", "fr": "Intervalle de rafraîchissement (s)" },
+      "description": {
+        "en": "How often each radio is read. The radios are small single-threaded devices: 30 s is gentle, 10 s the minimum. After a command, the radio is read every 5 s for a minute.",
+        "fr": "Fréquence de lecture de chaque radio. Ce sont de petits appareils qui traitent une requête à la fois : 30 s les ménage, 10 s au minimum. Après une commande, la radio est lue toutes les 5 s pendant une minute."
+      },
+      "required": false,
+      "default": 30,
+      "min": 10,
+      "max": 300
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "timeout_seconds": 60,
+      "label": { "en": "Test the radios", "fr": "Tester les radios" },
+      "description": {
+        "en": "Reads every radio added to Gladys and every address typed above.",
+        "fr": "Lit chaque radio ajoutée à Gladys et chaque adresse saisie ci-dessus."
+      }
+    },
+    {
+      "key": "list_presets",
+      "timeout_seconds": 45,
+      "label": { "en": "List the presets", "fr": "Lister les préréglages" },
+      "description": {
+        "en": "The presets stored in the current mode of a radio, with their numbers (for the \"Play a preset\" scene action).",
+        "fr": "Les préréglages enregistrés dans le mode actuel d'une radio, avec leur numéro (pour l'action de scène « Jouer un préréglage »)."
+      },
+      "fields": [
+        {
+          "key": "radio",
+          "type": "select",
+          "source": "devices",
+          "required": true,
+          "label": { "en": "Radio", "fr": "Radio" }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "radio",
+      "label": { "en": "Internet radio", "fr": "Radio internet" },
+      "description": {
+        "en": "Now playing, power, volume and the presets of a radio as buttons.",
+        "fr": "Lecture en cours, alimentation, volume et préréglages d'une radio en boutons."
+      },
+      "icon": "radio",
+      "settings": [
+        {
+          "key": "radio",
+          "type": "select",
+          "source": "devices",
+          "required": true,
+          "label": { "en": "Radio", "fr": "Radio" }
+        }
+      ],
+      "action_timeout_seconds": 45
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "now_playing_changed",
+      "label": { "en": "Radio: now playing changed", "fr": "Radio : la lecture a changé" },
+      "description": {
+        "en": "A radio started playing, changed station or source, or its title changed. Changes made through Gladys do not fire it.",
+        "fr": "Une radio s'est mise à jouer, a changé de station ou de source, ou son titre a changé. Les changements faits depuis Gladys ne le déclenchent pas."
+      },
+      "fields": [
+        {
+          "key": "radio",
+          "type": "select",
+          "source": "devices",
+          "required": false,
+          "label": { "en": "Radio (empty: any)", "fr": "Radio (vide : toutes)" }
+        },
+        {
+          "key": "change",
+          "type": "select",
+          "required": false,
+          "label": {
+            "en": "What changed (empty: anything)",
+            "fr": "Ce qui a changé (vide : tout)"
+          },
+          "options": [
+            {
+              "value": "station",
+              "label": {
+                "en": "The station or the source",
+                "fr": "La station ou la source"
+              }
+            },
+            {
+              "value": "track",
+              "label": {
+                "en": "The title on the same station",
+                "fr": "Le titre sur la même station"
+              }
+            }
+          ]
+        },
+        {
+          "key": "source",
+          "type": "select",
+          "required": false,
+          "label": { "en": "Source (empty: any)", "fr": "Source (vide : toutes)" },
+          "options": [
+            {
+              "value": "internet_radio",
+              "label": { "en": "Internet radio", "fr": "Radio internet" }
+            },
+            { "value": "dab", "label": { "en": "DAB / DAB+", "fr": "DAB / DAB+" } },
+            { "value": "fm", "label": { "en": "FM", "fr": "FM" } },
+            { "value": "spotify", "label": { "en": "Spotify", "fr": "Spotify" } },
+            { "value": "bluetooth", "label": { "en": "Bluetooth", "fr": "Bluetooth" } },
+            { "value": "aux", "label": { "en": "AUX input", "fr": "Entrée AUX" } },
+            {
+              "value": "music_player",
+              "label": { "en": "Music player (USB, UPnP)", "fr": "Lecteur (USB, UPnP)" }
+            },
+            {
+              "value": "streaming",
+              "label": {
+                "en": "Streaming services (Deezer, TIDAL…)",
+                "fr": "Services de streaming (Deezer, TIDAL…)"
+              }
+            },
+            { "value": "other", "label": { "en": "Other", "fr": "Autre" } }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "radio_name",
+          "type": "string",
+          "label": { "en": "Radio name", "fr": "Nom de la radio" }
+        },
+        {
+          "key": "change",
+          "type": "string",
+          "label": {
+            "en": "What changed (station, track)",
+            "fr": "Ce qui a changé (station, track)"
+          }
+        },
+        {
+          "key": "mode",
+          "type": "string",
+          "label": {
+            "en": "Source, as the radio names it",
+            "fr": "Source, telle que la radio la nomme"
+          }
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "label": { "en": "Source family", "fr": "Famille de la source" }
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "label": { "en": "Station or title", "fr": "Station ou titre" }
+        },
+        {
+          "key": "text",
+          "type": "string",
+          "label": { "en": "Text (song, programme)", "fr": "Texte (morceau, émission)" }
+        },
+        { "key": "artist", "type": "string", "label": { "en": "Artist", "fr": "Artiste" } },
+        { "key": "album", "type": "string", "label": { "en": "Album", "fr": "Album" } },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": { "en": "Now playing, one line", "fr": "Lecture en cours, une ligne" }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "play_preset",
+      "label": { "en": "Radio: play a preset", "fr": "Radio : jouer un préréglage" },
+      "description": {
+        "en": "Turns the radio on if needed, switches to the given source, then plays a preset by its number on the radio or its name.",
+        "fr": "Allume la radio si besoin, passe sur la source indiquée, puis joue un préréglage par son numéro sur la radio ou son nom."
+      },
+      "timeout_seconds": 45,
+      "fields": [
+        {
+          "key": "radio",
+          "type": "select",
+          "source": "devices",
+          "required": true,
+          "label": { "en": "Radio", "fr": "Radio" }
+        },
+        {
+          "key": "preset",
+          "type": "string",
+          "required": true,
+          "label": { "en": "Preset (number or name)", "fr": "Préréglage (numéro ou nom)" },
+          "placeholder": { "en": "3 or France Inter", "fr": "3 ou France Inter" }
+        },
+        {
+          "key": "mode",
+          "type": "string",
+          "required": false,
+          "label": {
+            "en": "Source first (empty: the current one)",
+            "fr": "Source d'abord (vide : l'actuelle)"
+          },
+          "placeholder": { "en": "DAB, FM, internet radio", "fr": "DAB, FM, radio internet" }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "preset",
+          "type": "number",
+          "label": { "en": "Preset number", "fr": "Numéro du préréglage" }
+        },
+        {
+          "key": "preset_name",
+          "type": "string",
+          "label": { "en": "Preset name", "fr": "Nom du préréglage" }
+        },
+        { "key": "mode", "type": "string", "label": { "en": "Source", "fr": "Source" } }
+      ]
+    },
+    {
+      "key": "set_mode",
+      "label": { "en": "Radio: change the source", "fr": "Radio : changer de source" },
+      "description": {
+        "en": "Turns the radio on if needed and switches to a source: its name on the radio or DAB, FM, internet radio, Spotify, Bluetooth, AUX.",
+        "fr": "Allume la radio si besoin et passe sur une source : son nom sur la radio ou DAB, FM, radio internet, Spotify, Bluetooth, AUX."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "radio",
+          "type": "select",
+          "source": "devices",
+          "required": true,
+          "label": { "en": "Radio", "fr": "Radio" }
+        },
+        {
+          "key": "mode",
+          "type": "string",
+          "required": true,
+          "label": { "en": "Source", "fr": "Source" },
+          "placeholder": { "en": "DAB", "fr": "DAB" }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "mode",
+          "type": "string",
+          "label": {
+            "en": "Source, as the radio names it",
+            "fr": "Source, telle que la radio la nomme"
+          }
+        },
+        {
+          "key": "mode_id",
+          "type": "string",
+          "label": {
+            "en": "Source id (IR, DAB, FM…)",
+            "fr": "Identifiant de la source (IR, DAB, FM…)"
+          }
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "label": { "en": "Source family", "fr": "Famille de la source" }
+        }
+      ]
+    },
+    {
+      "key": "get_now_playing",
+      "label": { "en": "Radio: now playing", "fr": "Radio : lecture en cours" },
+      "description": {
+        "en": "What a radio plays, for a message or a condition that follows.",
+        "fr": "Ce que joue une radio, pour un message ou une condition qui suit."
+      },
+      "timeout_seconds": 20,
+      "fields": [
+        {
+          "key": "radio",
+          "type": "select",
+          "source": "devices",
+          "required": true,
+          "label": { "en": "Radio", "fr": "Radio" }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "online",
+          "type": "boolean",
+          "label": { "en": "The radio answers", "fr": "La radio répond" }
+        },
+        { "key": "power", "type": "boolean", "label": { "en": "On", "fr": "Allumée" } },
+        { "key": "playing", "type": "boolean", "label": { "en": "Playing", "fr": "En lecture" } },
+        {
+          "key": "mode",
+          "type": "string",
+          "label": {
+            "en": "Source, as the radio names it",
+            "fr": "Source, telle que la radio la nomme"
+          }
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "label": { "en": "Source family", "fr": "Famille de la source" }
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "label": { "en": "Station or title", "fr": "Station ou titre" }
+        },
+        {
+          "key": "text",
+          "type": "string",
+          "label": { "en": "Text (song, programme)", "fr": "Texte (morceau, émission)" }
+        },
+        { "key": "artist", "type": "string", "label": { "en": "Artist", "fr": "Artiste" } },
+        { "key": "album", "type": "string", "label": { "en": "Album", "fr": "Album" } },
+        {
+          "key": "summary",
+          "type": "string",
+          "label": { "en": "Now playing, one line", "fr": "Lecture en cours, une ligne" }
+        },
+        { "key": "volume", "type": "number", "label": { "en": "Volume", "fr": "Volume" } },
+        {
+          "key": "artwork_url",
+          "type": "string",
+          "label": { "en": "Artwork address", "fr": "Adresse de la pochette" }
+        }
+      ]
+    }
+  ]
+}

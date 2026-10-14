@@ -1,0 +1,90 @@
+# Frontier Silicon radios
+
+**Unofficial connector, not affiliated with Frontier Smart Technologies nor with
+the radio brands.** It brings into Gladys the internet radios built on a
+Frontier Silicon module: Roberts, Hama, Medion, Revo, Lenco, Auna and many
+others, usually the ones the **UNDOK** app controls. Everything stays on
+your local network: no account, no cloud.
+
+**Testers wanted**: this first version was written without a radio at hand,
+from the protocol as the Home Assistant integration uses it. Tell us on the
+forum what works on your model, and what does not.
+
+## What you get
+
+| Surface                      | Content                                                                                                                                                                                                        |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One device per **radio**     | power, volume (the radio's own scale, 0-32 on most models), mute, source (DAB, FM, internet radio, Spotify, Bluetooth, AUX… as the radio lists them), play, pause, previous, next, playback state, now playing |
+| Scene trigger                | **now playing changed**: the radio started playing, changed station or source, or its title changed; filter on the radio, on "station" or "title", on the source                                               |
+| Scene actions                | **play a preset** (its number on the radio or its name, optionally in another source first), **change the source**, **now playing** (station, text, artist, album, volume…)                                    |
+| Dashboard widget             | **Internet radio**: now playing, volume, power, and the presets as buttons                                                                                                                                     |
+| Buttons in the configuration | **Test the radios**, **List the presets** of a radio                                                                                                                                                           |
+
+## Setup
+
+1. Install the integration and open **Discovery**: the radios answering on
+   your network are listed (Gladys asks them through SSDP). Add yours.
+2. A radio is missing? Its address goes in **Radio addresses** (an IP or a
+   host name, several separated by commas), then scan again. Give your radios
+   a fixed address in your router: a radio that changed address is found
+   again by a new scan in Discovery.
+3. The **PIN**: the radios ship with 1234; leave the field empty in that
+   case. If you changed it (menu Settings > Network > NetRemote PIN setup),
+   type it here.
+4. Put the **Internet radio** widget on a dashboard and pick a radio.
+
+Each radio is read every 30 seconds (option **Refresh interval**), every 5
+seconds for a minute after a command. Some models leave the network in
+standby: they show as **offline** (and off) and are tried again once a
+minute, quietly.
+
+## Scenes
+
+- **Now playing changed**: pick a radio (or none for all), and optionally
+  what changed (**station or source**, or **title on the same station**) and
+  the source. Variables: the radio name, the station or title (`name`), the
+  text (the song on internet radio, the scrolling text on DAB), the artist,
+  the album, the source and a one-line summary. Changes made through Gladys
+  (a preset played by a scene, a source chosen from the dashboard) do not
+  fire it: a scene can never loop through the radio. On DAB the scrolling
+  text changes often: filter on "station" if you only want the station.
+- **Play a preset**: the radio, the preset (`3` as on the radio, or a name
+  such as `France Inter`), and optionally the source to switch to first
+  (`DAB`, `FM`, `internet radio`…: each source has its own presets). The
+  radio is turned on if needed. The **List the presets** button shows what
+  a radio has stored.
+- **Change the source**: the radio and the source, by the name the radio
+  shows or `DAB`, `FM`, `internet radio`, `Spotify`, `Bluetooth`, `AUX`.
+- **Now playing** gives `{{power}}`, `{{playing}}`, `{{name}}`, `{{text}}`,
+  `{{artist}}`, `{{summary}}`, `{{volume}}`… for a message or a condition.
+
+The generic **Control a device** scene action also drives the power, the
+volume, the source and the transport buttons. **Mute** is shown by Gladys as
+a button: each press switches the mute on or off.
+
+## Good to know
+
+- No session is opened on the radio: the UNDOK app keeps working next to
+  Gladys (a session would kick it out, the radios allow only one).
+- The presets are read only when needed (the widget, a scene, the button),
+  never in the background: reading them puts the radio in "navigation" mode,
+  as the UNDOK app does.
+- The radios answer one request at a time: Gladys never sends two at once,
+  and waits a moment after each change.
+
+## Troubleshooting
+
+- **No radio in Discovery**: the scan needs a network that lets multicast
+  through (no VLAN between Gladys and the radio); type the address of the
+  radio in the configuration instead. Check that the radio answers: **Test the radios**.
+- **"refused the PIN"**: set the radio's PIN in the configuration.
+- **Offline**: the radio is unplugged, in deep standby (some models turn
+  their Wi-Fi off; look for a "network standby" or "keep network connected"
+  option in their menu), or it changed address: scan again in Discovery.
+- Logs: the integration's log level is set with the `LOG_LEVEL` variable.
+  The PIN never appears in them.
+
+## Privacy
+
+The integration only talks to your radios, on your local network. Nothing
+leaves your home.

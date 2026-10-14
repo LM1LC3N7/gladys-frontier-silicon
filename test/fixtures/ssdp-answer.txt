@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+CACHE-CONTROL: max-age=1800
+EXT:
+LOCATION: http://192.168.1.183:8080/dd.xml
+SERVER: Linux/3.x UPnP/1.0 undok/1.0
+ST: urn:schemas-frontier-silicon-com:undok:fsapi:1
+USN: uuid:3dcc7100-f76c-11dd-87af-00226124ca30::urn:schemas-frontier-silicon-com:undok:fsapi:1
+SPEAKER-NAME: Keukenradio
+
