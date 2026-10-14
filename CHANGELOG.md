@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-14
+
 ### Added
 
 - One device per Frontier Silicon radio (Roberts, Hama, Medion, Revo,
@@ -28,3 +30,6 @@ the notes of the version's GitHub Release.
 - Dashboard widget "Internet radio": now playing, volume, power and the
   presets as buttons.
 - "Test the radios" and "List the presets" buttons.
+
+[Unreleased]: https://github.com/LM1LC3N7/gladys-frontier-silicon/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/LM1LC3N7/gladys-frontier-silicon/releases/tag/v0.1.1

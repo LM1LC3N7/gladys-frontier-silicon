@@ -1,6 +1,6 @@
 {
   "name": "gladys-frontier-silicon",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Frontier Silicon internet radios (Roberts, Hama, Medion, Revo, Lenco...) for Gladys Assistant, on the local network through FSAPI: power, volume, source, presets and now playing, scene triggers, scene actions and a dashboard widget.",
   "type": "module",
